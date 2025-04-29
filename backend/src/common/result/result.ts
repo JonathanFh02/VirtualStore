@@ -1,13 +1,15 @@
-export type Result<T, E> = Ok<T, E> | Err<T, E>;
+export class Result<T> {
+  private constructor(
+    public readonly isSuccess: boolean,
+    public readonly value?: T,
+    public readonly error?: string,
+  ) {}
 
-export class Ok<T, E> {
-  readonly isOk: true = true;
-  readonly isErr: false = false;
-  constructor(readonly value: T) { }
-}
+  public static ok<U>(value: U): Result<U> {
+    return new Result<U>(true, value);
+  }
 
-export class Err<T, E> {
-  readonly isOk: false = false;
-  readonly isErr: true = true;
-  constructor(readonly error: E) { }
+  public static fail<U>(error: string): Result<U> {
+    return new Result<U>(false, undefined, error);
+  }
 }

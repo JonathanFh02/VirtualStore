@@ -4,6 +4,10 @@ export class CreateTransactionDto {
 
   @IsNumber()
   @IsNotEmpty()
+  userId: number;
+
+  @IsNumber()
+  @IsNotEmpty()
   price: number;
 
   @IsString()
@@ -12,7 +16,7 @@ export class CreateTransactionDto {
 
   @IsString()
   @IsNotEmpty()
-  paymentMethod: string;
+  transactionMethod: string;
 
   @IsEnum(['PENDING', 'APPROVED', 'DECLINED'])
   @IsNotEmpty()
