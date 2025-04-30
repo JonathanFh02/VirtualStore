@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionRepository } from './transaction.repository';
 import { TransactionModel } from '../transaction.model';
-import { Result } from '../../../common/result/result';
 
-// Mock de TransactionModel para evitar interacciones con la base de datos real
+
 jest.mock('../transaction.model', () => ({
   TransactionModel: {
     save: jest.fn(),
@@ -26,7 +25,7 @@ describe('TransactionRepository', () => {
 
   describe('create', () => {
     it('should create and return a transaction', async () => {
-      // Datos de prueba
+    
       const transactionData = {
         id: '123',
         price: 100,
@@ -35,7 +34,7 @@ describe('TransactionRepository', () => {
         status: 'PENDING',
       };
 
-      // Mock de la función save
+     
       const mockSave = jest.fn().mockResolvedValue(transactionData);
       mockTransactionModel.save = mockSave;
 
@@ -55,7 +54,7 @@ describe('TransactionRepository', () => {
         status: 'PENDING',
       };
 
-      // Simula un error en el proceso de guardado
+  
       const mockSave = jest.fn().mockRejectedValue(new Error('Database error'));
       mockTransactionModel.save = mockSave;
 
@@ -77,7 +76,7 @@ describe('TransactionRepository', () => {
         status: 'PENDING',
       };
 
-      // Mock de la función get
+     
       const mockGet = jest.fn().mockResolvedValue(transactionData);
       mockTransactionModel.get = mockGet;
 
