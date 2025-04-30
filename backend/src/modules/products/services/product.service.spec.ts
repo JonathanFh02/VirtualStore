@@ -1,18 +1,29 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ProductService } from './product.service';
+import { Injectable } from '@nestjs/common';
+import { ProductRepository } from '../repositories/product.repository';
+import { Result } from '../../../common/result/result';
+import { Product } from '../product.model';
 
-describe('ProductService', () => {
-  let service: ProductService;
+@Injectable()
+export class ProductService {
+    constructor(private readonly productRepository: ProductRepository) { }
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [ProductService],
-    }).compile();
+    
+    async createOrUpdate(product: Product): Promise<Result<Product>> {
+        
+        const result = await this.productRepository.createProduct(product);
+        return result; 
+    }
 
-    service = module.get<ProductService>(ProductService);
-  });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+    async getById(id: number): Promise<Result<Product>> {
+  
+        const result = await this.productRepository.findById(id);
+        return result; 
+    }
+
+    async subtractStock(id: number, stock: number): Promise<Result<Product>> {
+        
+        const result = await this.productRepository.subtractStock(id, stock);
+        return result; 
+    }
+}
