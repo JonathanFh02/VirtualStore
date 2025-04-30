@@ -8,23 +8,25 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) { }
-  
-  async create(dto: CreateUserDto): Promise<Result<User>> {
-    try {
-      const hashedPassword = await bcrypt.hash(dto.password, 10);
-      const user: User = {
-        id: dto.id,
-        name: dto.name,
-        email: dto.email,
-        phoneNumber:dto.phoneNumber,
-        password: hashedPassword,
-      };
 
-      const result = await this.userRepository.create(user);
-      return result;
-    } catch (error) {
-      return Result.fail('Error creating user: ' + error.message);
+  async create(dto: CreateUserDto): Promise<Result<User>> {
+    const existingUserResult = await this.userRepository.findById(dto.id);
+    if (existingUserResult.isSuccess) {
+      return Result.fail('El usuario ya existe con esta Id');
     }
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const user: User = {
+      id: dto.id,
+      name: dto.name,
+      email: dto.email,
+      phoneNumber: dto.phoneNumber,
+      password: hashedPassword,
+    };
+
+    const createResult = await this.userRepository.create(user);
+    
+    return createResult;
+
   }
 
   async findByEmail(email: string) {
