@@ -8,7 +8,7 @@ function ProductDetail() {
     name: "Camiseta de deporte",
     description: "Camiseta ideal para entrenamientos intensos.",
     price: 25.99,
-    image: "/images/product1.jpg"
+    image: "/images/camiseta.jpg"
   };
 
   return (

@@ -1,11 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import './assets/styles/global.css';
+import ProductList from './components/ProductList';
+import Cart from './components/Cart';
+
+function Home() {
+  return <h2>Bienvenido a la tienda</h2>;
+}
 
 function App() {
   return (
@@ -13,10 +14,9 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/product" element={<ProductList />} />
       </Routes>
-      <Footer />
     </Router>
   );
 }

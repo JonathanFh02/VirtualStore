@@ -4,6 +4,7 @@ import { Result } from '../../../common/result/result';
 @Injectable()
 export class ProductRepository {
 
+  private readonly productModel = ProductModel;
   async createProduct(product: Product): Promise<Result<Product>> {
     try {
       const existing = await ProductModel.get(product.id);
@@ -34,6 +35,23 @@ export class ProductRepository {
       return Result.fail('Error finding product: ' + error.message);
     }
   }
+
+  async getAll(): Promise<Result<Product[]>> {
+    try {
+      const products = await ProductModel.scan().exec();
+  
+      if (!products || products.length === 0) {
+        return Result.fail('No se encontraron productos');
+      }
+  
+      const result = products.map(product => product.toJSON() as Product);
+  
+      return Result.ok(result);
+    } catch (error) {
+      return Result.fail('Error al obtener productos: ' + error.message);
+    }
+  }
+  
 
   async subtractStock(id: number, stock: number): Promise<Result<Product>> {
     try {
