@@ -1,36 +1,94 @@
 import React, { useEffect, useState } from 'react';
-import { getProductById } from '../services/productService';
+import { getProducts } from '../services/productService';
 
-export default function ProductDetail() {
-  const [product, setProduct] = useState(null);
-  const [productId, setProductId] = useState('');
+function ProductList() {
+  const [products, setProducts] = useState([]);
 
-  const handleSearch = async () => {
-    const data = await getProductById(productId);
-    setProduct(data);
+
+  useEffect(() => {
+    async function load() {
+      const result = await getProducts();
+      setProducts(result);
+    }
+    load();
+  }, []);
+
+  const handleAddToCart = async (userId, productId, name, price) => {
+
+    const quantity = Number(document.getElementById(productId).value);
+
+    if (isNaN(quantity) || quantity <= 0) {
+      console.error('La cantidad no es válida');
+      return;
+    }
+    // Verifica que los datos sean válidos antes de enviarlos
+    if (!name || typeof name !== 'string') {
+      console.error('El nombre del producto es inválido');
+      return false;
+    }
+
+    if (typeof price !== 'number' || isNaN(price)) {
+      console.error('El precio del producto es inválido');
+      return false;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:4000/cart/add`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          productId,
+          name,
+          price,
+          quantity,
+        }),
+      });
+
+      const data = await response.json();
+      console.log('Respuesta del servidor:', data);
+      return data.isSuccess;
+    } catch (error) {
+      console.error('Error al agregar al carrito:', error);
+      return false;
+    }
   };
 
   return (
-    <div>
-      <h2>Buscar producto por ID</h2>
-      <input
-        type="number"
-        value={productId}
-        onChange={(e) => setProductId(e.target.value)}
-        placeholder="Ingresa el ID del producto"
-      />
-      <button onClick={handleSearch}>Buscar</button>
-
-      {product ? (
-        <div style={{ marginTop: '20px' }}>
-          <h3>{product.name}</h3>
-          <p><strong>Descripción:</strong> {product.description}</p>
+    <div className="product-list">
+      {products.map(product => (
+        <div key={product.id} className="product-card">
+          <h2>{product.name}</h2>
+          <p>{product.description}</p>
           <p><strong>Precio:</strong> ${product.price}</p>
           <p><strong>Stock:</strong> {product.stock}</p>
+
+          {product.imageUrl && (
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              style={{ width: '200px', borderRadius: '8px' }}
+            />
+          )}
+
+          <input
+            type="number"
+            min="1"
+            defaultValue={1}
+            style={{ width: '60px', marginRight: '10px' }}
+            id={product.id}
+          />
+
+          <button onClick={() => {
+            const quantity = document.getElementById(product.id).value;
+            handleAddToCart(121212, product.id, product.name, product.price, quantity)
+          }}>
+            Agregar al carrito
+          </button>
         </div>
-      ) : (
-        <p>No hay producto cargado.</p>
-      )}
+      ))}
     </div>
   );
 }
+
+export default ProductList;

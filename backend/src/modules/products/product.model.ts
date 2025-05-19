@@ -21,6 +21,10 @@ export const ProductSchema = new dynamoose.Schema({
         type: Number,
         required: true
     },
+    imageUrl: { 
+        type: String,
+        required: false,
+    },
 });
 
 export const ProductModel = dynamoose.model('Product', ProductSchema);
@@ -31,5 +35,6 @@ export interface Product {
     description: string;
     price: number;
     stock: number;
+    imageUrl?: string;
 }
 
